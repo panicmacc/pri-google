@@ -1,11 +1,10 @@
 use drive3::{
     api::DriveHub,
-    hyper::{self, client::HttpConnector, Body, Response},
+    hyper::{self, client::HttpConnector, body::HttpBody},
     hyper_rustls::{self, HttpsConnector},
-    oauth2, Error, Result, client::get_body_as_string 
+    oauth2, Error
 };
 use google_drive3 as drive3;
-use hyper::body::{HttpBody, Bytes};
 use std::env;
 
 pub struct GDrive {
@@ -45,21 +44,6 @@ impl GDrive {
             .hub
             .files()
             .list()
-            // .corpora("user")
-            // .q(query)
-            // .team_drive_id("eos")
-            // .supports_team_drives(false)
-            // .supports_all_drives(true)
-            // .spaces("duo")
-            // .page_token("no")
-            // .page_size(15)
-            // .order_by("kasd")
-            // .include_team_drive_items(true)
-            // .include_permissions_for_view("et")
-            // .include_items_from_all_drives(true)
-            // .drive_id("vero")
-            // .corpus("erat")
-            // .corpora("sed")
             .doit()
             .await;
 
@@ -88,7 +72,9 @@ impl GDrive {
             }
         }
     }
-    pub async fn get(&self, file_id: &str) -> () {
+
+    // TODO: Split out get, download, and export
+    pub async fn get(&self, file_id: &str) -> Result<Vec<u8>, Error> {
         let result = self
             .hub
             .files()
@@ -113,7 +99,7 @@ impl GDrive {
                 | Error::Failure(_)
                 | Error::BadRequest(_)
                 | Error::FieldClash(_)
-                | Error::JsonDecodeError(_, _) => println!("{}", e),
+                | Error::JsonDecodeError(_, _) => Err(e),
             },
             Ok(res) => {
                 let res = res.0;
@@ -124,15 +110,8 @@ impl GDrive {
                     let mut data = (*data).to_vec();
                     content.append(&mut data);
                 };
-                use std::io::Write; // bring trait into scope
-                use std::fs;
 
-                let mut file = fs::OpenOptions::new()
-                    .write(true)
-                    .create(true)
-                    .open("/home/adrian/test.pdf")
-                    .unwrap();
-                file.write_all(content.as_slice()).unwrap();
+                Ok(content)
             }
         }
     }

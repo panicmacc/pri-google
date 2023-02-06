@@ -1,4 +1,4 @@
-use pmc_google::sheets::Sheet;
+use pri_google::sheets::Sheet;
 use std::env;
 
 #[tokio::main]
@@ -18,7 +18,7 @@ async fn main() {
     }
 
     // Append to a sheet
-    // let range = "Transactions!A30:B31";
+    // let range = "Sheet1!A30:B31";
     // let values = vec![
     //     vec!["A1".to_string(), "B1".to_string()],
     //     vec!["A2".to_string(), "B2".to_string()],
@@ -27,11 +27,12 @@ async fn main() {
     // println!("{:#?}", res);
 
     // Update a sheet
-    // let range = "Transactions!A30:B31";
+    // let range = "Sheet1!A30:B31";
     // let values = vec![
     //     vec!["X1".to_string(), "B1".to_string()],
     //     vec!["A2".to_string(), "Y1".to_string()],
     // ];
     // let res = sheet.update(range, values).await;
     // println!("{:#?}", res);
+
 }

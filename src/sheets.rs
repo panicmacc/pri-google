@@ -1,5 +1,4 @@
 use google_sheets4 as sheets4;
-// use pmc_google::hello;
 pub use sheets4::api::{AppendValuesResponse, UpdateValuesResponse, ValueRange};
 use sheets4::{
     hyper::{self, client::HttpConnector, Body, Response},
@@ -11,7 +10,6 @@ use std::env;
 pub type SheetRows = Vec<Vec<String>>;
 
 pub struct Sheet {
-    // sa: oauth2::authenticator::Authenticator<HttpsConnector<HttpConnector>>,
     hub: Sheets<HttpsConnector<HttpConnector>>,
     sheet_id: String,
 }

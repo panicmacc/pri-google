@@ -1,4 +1,4 @@
-use pmc_google::drive;
+use pri_google::drive;
 use std::env;
 
 #[tokio::main]
@@ -13,5 +13,15 @@ async fn main() {
     
     // Fetch the file with the specified ID.
     // TODO: differentiate "get", "download", and "export". Return File for "get", and bytes for latter two.
-    drive.get(&file_id[..]).await;
+    if let Ok(content) = drive.get(&file_id[..]).await {
+        use std::io::Write; // bring trait into scope
+        use std::fs;
+
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open("./test.pdf")
+            .unwrap();
+        file.write_all(content.as_slice()).unwrap();
+    };
 }
