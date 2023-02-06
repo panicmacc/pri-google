@@ -17,7 +17,6 @@
     
       let
         name = "pri-google";
-        #pkgs = nixpkgs.legacyPackages.${system}; 
 
         pkgs = import nixpkgs {
           inherit system;
@@ -52,39 +51,6 @@
         ];
 
       in rec {
-        # `flattenTree` returns a flat list of the package's derivations, ignoring other attribs.
-        packages = utils.lib.flattenTree {
-          gitAndTools = pkgs.gitAndTools;
-          
-          pri-google = pkgs.rustPlatform.buildRustPackage rec {
-           pname = "${name}";
-           version = "0.1.0";
-          
-           src = pkgs.fetchFromGitHub {
-             owner = "panicmacc";
-             repo = pname;
-             rev = version;
-             sha256 = "1iga3320mgi7m853la55xip514a3chqsdi1a1rwv25lr9b1p7vd3";
-           };
-          
-           cargoSha256 = "17ldqr3asrdcsh4l29m3b5r37r5d0b3npq1lrgjmxb6vlx6a36qh";
-          
-           meta = with pkgs.lib; {
-             description = "Simple abstractions over select Google services.";
-             homepage = "https://github.com/panicmacc/pri-google";
-             license = licenses.apache;
-             maintainers = [ maintainers.tailhook ];
-           };
-          };
-
-        };
-
-        # `nix build` 
-        defaultPackage = packages.pri-google;
-
-        # `nix run` todo -- add some cargo examples here
-        # apps.hello = utils.lib.mkApp { drv = packages.hello; };
-        # defaultApp = apps.hello;
 
         # `nix develop`
         devShell = pkgs.mkShell {
