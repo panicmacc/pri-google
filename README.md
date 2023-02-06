@@ -1,2 +1,2 @@
 # pri-google
-Simple abstractions of select Google services.
+Simple abstractions over select Google services.
