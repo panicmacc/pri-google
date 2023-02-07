@@ -1,8 +1,8 @@
 use drive3::{
-    api::DriveHub,
-    hyper::{self, client::HttpConnector, body::HttpBody},
+    api::{DriveHub, File},
+    hyper::{self, body::HttpBody, client::HttpConnector},
     hyper_rustls::{self, HttpsConnector},
-    oauth2, Error
+    oauth2, Error,
 };
 use google_drive3 as drive3;
 use std::env;
@@ -39,13 +39,8 @@ impl GDrive {
         Self { hub }
     }
 
-    pub async fn list(&self) -> () {
-        let result = self
-            .hub
-            .files()
-            .list()
-            .doit()
-            .await;
+    pub async fn list(&self) -> Result<Option<Vec<File>>, Error> {
+        let result = self.hub.files().list().doit().await;
 
         match result {
             Err(e) => match e {
@@ -60,16 +55,9 @@ impl GDrive {
                 | Error::Failure(_)
                 | Error::BadRequest(_)
                 | Error::FieldClash(_)
-                | Error::JsonDecodeError(_, _) => println!("{}", e),
+                | Error::JsonDecodeError(_, _) => Err(e),
             },
-            Ok(res) => {
-                let files = res.1.files.unwrap();
-                for f in files {
-                    let name = f.name.unwrap_or_default();
-                    let id = f.id.unwrap_or_default();
-                    println!("Name(Id): {}({})", name, id);
-                }
-            }
+            Ok(res) => Ok(res.1.files),
         }
     }
 
@@ -104,12 +92,12 @@ impl GDrive {
             Ok(res) => {
                 let res = res.0;
                 let mut body = res.into_body();
-               
+
                 let mut content = Vec::<u8>::default();
                 while let Some(Ok(data)) = body.data().await {
                     let mut data = (*data).to_vec();
                     content.append(&mut data);
-                };
+                }
 
                 Ok(content)
             }
