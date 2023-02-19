@@ -67,7 +67,7 @@ impl Sheet {
                 | Error::BadRequest(_)
                 | Error::FieldClash(_)
                 | Error::JsonDecodeError(_, _) => {
-                    println!("{}", e);
+                    println!("Error: {}", e);
                     None
                 }
             },
