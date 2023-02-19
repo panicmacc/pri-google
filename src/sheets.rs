@@ -47,6 +47,7 @@ impl Sheet {
             .hub
             .spreadsheets()
             .values_get(&self.sheet_id[..], range)
+            .value_render_option("UNFORMATTED_VALUE")
             .major_dimension("ROWS")
             .doit()
             .await;
