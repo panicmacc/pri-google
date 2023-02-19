@@ -48,6 +48,7 @@ impl Sheet {
             .spreadsheets()
             .values_get(&self.sheet_id[..], range)
             .value_render_option("UNFORMATTED_VALUE")
+            .date_time_render_option("FORMATTED_STRING")
             .major_dimension("ROWS")
             .doit()
             .await;
